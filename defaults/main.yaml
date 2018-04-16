@@ -1,0 +1,25 @@
+---
+
+# GlusfterFS release
+glusterfs_server_yumrepo_release: "{{
+  '3.13'
+    if ansible_distribution_major_version | int == 6
+    else
+  '4.0' }}"
+
+# YUM repo URL
+glusterfs_server_yumrepo_url: https://buildlogs.centos.org/centos/{{ ansible_distribution_major_version }}/storage/$basearch/gluster-{{ glusterfs_server_yumrepo_release }}/
+
+# Package to be installed (explicit version can be specified here)
+glusterfs_server_pkg: glusterfs-server
+
+# Service name
+glusterfs_server_service: glusterd
+
+# Brick directory attributes
+glusterfs_server_brick_owner: gluster
+glusterfs_server_brick_group: gluster
+glusterfs_server_brick_mode: "0750"
+
+# Volumes (see README for examples)
+glusterfs_server_volumes: []

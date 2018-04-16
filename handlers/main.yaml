@@ -1,0 +1,9 @@
+---
+
+- name: Restart GlusterFS service
+  service:
+    name: "{{ glusterfs_server_service }}"
+    state: restarted
+  when: >
+    glusterfs_server_service_started is not defined or
+    not glusterfs_server_service_started.changed

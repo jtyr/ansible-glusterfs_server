@@ -1,0 +1,32 @@
+---
+
+- name: Create brick directory ({{ vol.name }})
+  file:
+    state: directory
+    path: "{{ vol.bricks }}"
+    owner: "{{ vol.brick_owner | default(glusterfs_server_brick_owner) }}"
+    group: "{{ vol.brick_group | default(glusterfs_server_brick_group) }}"
+    mode: "{{ vol.brick_mode | default(glusterfs_server_brick_mode) }}"
+  when: >
+    'bricks' in vol
+
+- name: Manage volume ({{ vol.name }})
+  gluster_volume:
+    arbiters: "{{ vol.arbiters | default(omit) }}"
+    bricks: "{{ vol.bricks | default(omit) }}"
+    cluster: "{{ vol.cluster | default(omit) }}"
+    directory: "{{ vol.directory | default(omit) }}"
+    disperses: "{{ vol.disperses | default(omit) }}"
+    force: "{{ vol.force | default(omit) }}"
+    host: "{{ vol.host | default(omit) }}"
+    name: "{{ vol.name }}"
+    options: "{{ vol.options | default(omit) }}"
+    quota: "{{ vol.quota | default(omit) }}"
+    rebalance: "{{ vol.rebalance | default(omit) }}"
+    redundancies: "{{ vol.redundancies | default(omit) }}"
+    replicas: "{{ vol.replicas | default(omit) }}"
+    start_on_create: "{{ vol.start_on_create | default(omit) }}"
+    state: "{{ vol.present | default('present') }}"
+    stripes: "{{ vol.stripes | default(omit) }}"
+    transport: "{{ vol.transport | default(omit) }}"
+  run_once: "{{ vol.run_once | default(false) }}"

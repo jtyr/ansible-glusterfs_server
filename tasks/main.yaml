@@ -1,0 +1,44 @@
+---
+
+- name: Test distribution
+  assert:
+    that: ansible_os_family == 'RedHat'
+
+- name: Create YUM repo file
+  yum_repository:
+    name: glusterfs
+    description: GlusterFS YUM repo
+    baseurl: "{{ glusterfs_server_yumrepo_url }}"
+    gpgcheck: no
+  tags:
+    - glusterfs_server_pkg
+
+- name: Install GlusterFS server
+  package:
+    name: "{{ glusterfs_server_pkg }}"
+  notify:
+    - Restart GlusterFS service
+  tags:
+    - glusterfs_server_pkg
+
+- name: Enable the GlusterFS service
+  service:
+    name: "{{ glusterfs_server_service }}"
+    enabled: yes
+  tags:
+    - glusterfs_server_service
+
+- name: Run the GlusterFS service
+  service:
+    name: "{{ glusterfs_server_service }}"
+    state: started
+  register: glusterfs_server_service_started
+  tags:
+    - glusterfs_server_service
+
+- include_tasks: volume.yaml
+  loop: "{{ glusterfs_server_volumes }}"
+  loop_control:
+    loop_var: vol
+  tags:
+    - glusterfs_server_volume
