@@ -1,0 +1,20 @@
+---
+
+defaults:
+  box: centos/7
+  group: GlusterFS
+  ip_range: 192.168.141.%d
+  ssh_port_start: 14100
+  provision_all: yes
+  #provision_individual: yes
+  provisioning:
+    raw_arguments:
+      - --diff
+
+vms:
+  gluster-centos7a:
+    extra_disks:
+      - 10
+  gluster-centos7b:
+    extra_disks:
+      - 10

@@ -56,23 +56,60 @@ Role variables
 ```yaml
 # GlusfterFS release
 glusterfs_server_yumrepo_release: "{{
+  '3.10'
+    if (
+      ansible_distribution == 'Ubuntu' and
+      ansible_distribution_major_version | int < 16
+    ) else
   '3.13'
-    if ansible_distribution_major_version | int == 6
-    else
+    if (
+      (
+        ansible_os_family == 'RedHat' and
+        ansible_distribution_major_version | int < 7
+      ) or (
+        ansible_distribution == 'Debian' and
+        ansible_distribution_major_version | int < 9
+      )
+    ) else
   '4.0' }}"
 
 # YUM repo URL
 glusterfs_server_yumrepo_url: https://buildlogs.centos.org/centos/{{ ansible_distribution_major_version }}/storage/$basearch/gluster-{{ glusterfs_server_yumrepo_release }}/
 
+# APT key
+glusterfs_server_apt_key: "{{
+  'https://download.gluster.org/pub/gluster/glusterfs/' ~ glusterfs_server_yumrepo_release ~ '/rsa.pub'
+    if ansible_distribution == 'Debian'
+    else
+  '' }}"
+
+# APT repo URL
+glusterfs_server_apt_url: "{{
+  'ppa:gluster/glusterfs-' ~ glusterfs_server_yumrepo_release
+    if ansible_distribution == 'Ubuntu'
+    else
+  'deb https://download.gluster.org/pub/gluster/glusterfs/' ~ glusterfs_client_yumrepo_release ~ '/LATEST/Debian/' ~ ansible_distribution_release ~ '/amd64/apt ' ~ ansible_distribution_release ~  ' main' }}"
+
 # Package to be installed (explicit version can be specified here)
 glusterfs_server_pkg: glusterfs-server
 
 # Service name
-glusterfs_server_service: glusterd
+glusterfs_server_service: "{{
+  'glusterd'
+    if (
+      ansible_os_family == 'RedHat' or (
+        ansible_distribution == 'Ubuntu' and
+        ansible_distribution_major_version | int >= 16
+      ) or
+        ansible_distribution == 'Debian' and
+        ansible_distribution_major_version | int >= 9
+      )
+    ) else
+  'glusterfs-server' }}"
 
 # Brick directory attributes
-glusterfs_server_brick_owner: gluster
-glusterfs_server_brick_group: gluster
+glusterfs_server_brick_owner: root
+glusterfs_server_brick_group: root
 glusterfs_server_brick_mode: "0750"
 
 # Volumes (see README for examples)

@@ -1,0 +1,226 @@
+---
+
+- name: GlusterFS server - CentOS 6
+  hosts: ~gluster-centos6
+  vars:
+    lvm_extend_config:
+      vg_data:
+        disks:
+          - sdb
+        vols:
+          - name: bricks
+            mount: yes
+    glusterfs_server_volumes:
+      - name: test1
+        bricks: /mnt/bricks/b1
+        replicas: 2
+        cluster:
+          - 192.168.140.10
+          - 192.168.140.11
+        run_once: yes
+    glusterfs_client_volumes:
+      - name: test1
+        dir: /sftp
+        servers:
+          - 192.168.140.10
+          - 192.168.140.11
+  roles:
+    - lvm_extend
+    - glusterfs_server
+    - glusterfs_client
+
+- name: GlusterFS server - CentOS 7
+  hosts: ~gluster-centos7
+  vars:
+    lvm_extend_config:
+      vg_data:
+        disks:
+          - sdb
+        vols:
+          - name: bricks
+            mount: yes
+    glusterfs_server_volumes:
+      - name: test1
+        bricks: /mnt/bricks/b1
+        replicas: 2
+        cluster:
+          - 192.168.141.10
+          - 192.168.141.11
+        run_once: yes
+    glusterfs_client_volumes:
+      - name: test1
+        dir: /sftp
+        servers:
+          - 192.168.141.10
+          - 192.168.141.11
+  roles:
+    - lvm_extend
+    - glusterfs_server
+    - glusterfs_client
+
+- name: GlusterFS server - Debian 8
+  hosts: ~gluster-debian8
+  vars:
+    lvm_extend_config:
+      vg_data:
+        disks:
+          - sdb
+        vols:
+          - name: bricks
+            mount: yes
+    glusterfs_server_volumes:
+      - name: test1
+        bricks: /mnt/bricks/b1
+        replicas: 2
+        cluster:
+          - 192.168.150.10
+          - 192.168.150.11
+        run_once: yes
+    glusterfs_client_volumes:
+      - name: test1
+        dir: /sftp
+        servers:
+          - 192.168.150.10
+          - 192.168.150.11
+  pre_tasks:
+    - name: Install SSL libs
+      package:
+        name: apt-transport-https
+  roles:
+    - lvm_extend
+    - glusterfs_server
+    - glusterfs_client
+  environment:
+    RUNLEVEL: 1
+
+- name: GlusterFS server - Debian 9
+  hosts: ~gluster-debian9
+  vars:
+    lvm_extend_config:
+      vg_data:
+        disks:
+          - sdb
+        vols:
+          - name: bricks
+            mount: yes
+    glusterfs_server_volumes:
+      - name: test1
+        bricks: /mnt/bricks/b1
+        replicas: 2
+        cluster:
+          - 192.168.151.10
+          - 192.168.151.11
+        run_once: yes
+    glusterfs_client_volumes:
+      - name: test1
+        dir: /sftp
+        servers:
+          - 192.168.151.10
+          - 192.168.151.11
+  pre_tasks:
+    - name: Install SSL libs
+      package:
+        name: apt-transport-https
+  roles:
+    - lvm_extend
+    - glusterfs_server
+    - glusterfs_client
+  environment:
+    RUNLEVEL: 1
+
+- name: GlusterFS server - Ubuntu 14
+  hosts: ~gluster-ubuntu14
+  vars:
+    lvm_extend_config:
+      vg_data:
+        disks:
+          - sdb
+        vols:
+          - name: bricks
+            mount: yes
+    glusterfs_server_volumes:
+      - name: test1
+        bricks: /mnt/bricks/b1
+        replicas: 2
+        cluster:
+          - 192.168.160.10
+          - 192.168.160.11
+        run_once: yes
+    glusterfs_client_volumes:
+      - name: test1
+        dir: /sftp
+        servers:
+          - 192.168.160.10
+          - 192.168.160.11
+  roles:
+    - lvm_extend
+    - glusterfs_server
+    - glusterfs_client
+  environment:
+    RUNLEVEL: 1
+
+- name: GlusterFS server - Ubuntu 16
+  hosts: ~gluster-ubuntu16
+  gather_facts: no
+  vars:
+    lvm_extend_config:
+      vg_data:
+        disks:
+          - sdc
+        vols:
+          - name: bricks
+            mount: yes
+    glusterfs_server_volumes:
+      - name: test1
+        bricks: /mnt/bricks/b1
+        replicas: 2
+        cluster:
+          - 192.168.161.10
+          - 192.168.161.11
+        run_once: yes
+    glusterfs_client_volumes:
+      - name: test1
+        dir: /sftp
+        servers:
+          - 192.168.161.10
+          - 192.168.161.11
+  roles:
+    - vagrant_ubuntu_init
+    - lvm_extend
+    - glusterfs_server
+    - glusterfs_client
+  environment:
+    RUNLEVEL: 1
+
+- name: GlusterFS server - Ubuntu 18
+  hosts: ~gluster-ubuntu18
+  gather_facts: no
+  vars:
+    lvm_extend_config:
+      vg_data:
+        disks:
+          - sdc
+        vols:
+          - name: bricks
+            mount: yes
+    glusterfs_server_volumes:
+      - name: test1
+        bricks: /mnt/bricks/b1
+        replicas: 2
+        cluster:
+          - 192.168.162.10
+          - 192.168.162.11
+        run_once: yes
+    glusterfs_client_volumes:
+      - name: test1
+        dir: /sftp
+        servers:
+          - 192.168.162.10
+          - 192.168.162.11
+  roles:
+    - vagrant_ubuntu_init
+    - lvm_extend
+    - glusterfs_server
+    - glusterfs_client
+  environment:
+    RUNLEVEL: 1

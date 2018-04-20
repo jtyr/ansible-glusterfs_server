@@ -10,6 +10,15 @@ galaxy_info:
       versions:
         - 6
         - 7
+    - name: Debian
+      versions:
+        - jessie
+        - stretch
+    - name: Ubuntu
+      versions:
+        - trusty
+        - xenial
+        - bionic
   galaxy_tags:
     - system
     - storage

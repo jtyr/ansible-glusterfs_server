@@ -1,0 +1,22 @@
+---
+
+defaults:
+  box: ubuntu/bionic64
+  group: GlusterFS
+  ip_range: 192.168.162.%d
+  ssh_port_start: 16200
+  provision_all: yes
+  #provision_individual: yes
+  storage_controller_create: no
+  storage_controller_offset: 2
+  provisioning:
+    raw_arguments:
+      - --diff
+
+vms:
+  gluster-ubuntu18a:
+    extra_disks:
+      - 10
+  gluster-ubuntu18b:
+    extra_disks:
+      - 10

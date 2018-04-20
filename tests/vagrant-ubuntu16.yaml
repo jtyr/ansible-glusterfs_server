@@ -1,0 +1,22 @@
+---
+
+defaults:
+  box: ubuntu/xenial64
+  group: GlusterFS
+  ip_range: 192.168.161.%d
+  ssh_port_start: 16100
+  provision_all: yes
+  #provision_individual: yes
+  storage_controller_create: no
+  storage_controller_offset: 2
+  provisioning:
+    raw_arguments:
+      - --diff
+
+vms:
+  gluster-ubuntu16a:
+    extra_disks:
+      - 10
+  gluster-ubuntu16b:
+    extra_disks:
+      - 10

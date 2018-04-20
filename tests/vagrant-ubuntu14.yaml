@@ -1,0 +1,20 @@
+---
+
+defaults:
+  box: ubuntu/trusty64
+  group: GlusterFS
+  ip_range: 192.168.160.%d
+  ssh_port_start: 16000
+  provision_all: yes
+  #provision_individual: yes
+  provisioning:
+    raw_arguments:
+      - --diff
+
+vms:
+  gluster-ubuntu14a:
+    extra_disks:
+      - 10
+  gluster-ubuntu14b:
+    extra_disks:
+      - 10

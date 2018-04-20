@@ -1,0 +1,24 @@
+---
+
+defaults:
+  box: debian/jessie64
+  group: GlusterFS
+  ip_range: 192.168.150.%d
+  ssh_port_start: 15000
+  provision_all: yes
+  #provision_individual: yes
+  storage_controller_create: no
+  storage_controller_type: sata
+  storage_controller_name: SATA Controller
+  storage_controller_offset: 1
+  provisioning:
+    raw_arguments:
+      - --diff
+
+vms:
+  gluster-debian8a:
+    extra_disks:
+      - 10
+  gluster-debian8b:
+    extra_disks:
+      - 10

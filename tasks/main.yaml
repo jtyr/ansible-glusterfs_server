@@ -2,7 +2,9 @@
 
 - name: Test distribution
   assert:
-    that: ansible_os_family == 'RedHat'
+    that: >
+      ansible_os_family == 'RedHat' or
+      ansible_os_family == 'Debian'
 
 - name: Create YUM repo file
   yum_repository:
@@ -10,6 +12,26 @@
     description: GlusterFS YUM repo
     baseurl: "{{ glusterfs_server_yumrepo_url }}"
     gpgcheck: no
+  when: >
+    ansible_os_family == 'RedHat'
+  tags:
+    - glusterfs_server_pkg
+
+- name: Add APT repo key
+  apt_key:
+    url: "{{ glusterfs_server_apt_key }}"
+  when: >
+    glusterfs_server_apt_key | length > 0 and
+    ansible_os_family == 'Debian' and
+    ansible_distribution == 'Debian'
+  tags:
+    - glusterfs_server_pkg
+
+- name: Create APT repo file
+  apt_repository:
+    repo: "{{ glusterfs_server_apt_url }}"
+  when: >
+    ansible_os_family == 'Debian'
   tags:
     - glusterfs_server_pkg
 
