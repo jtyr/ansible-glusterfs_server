@@ -9,7 +9,7 @@ vagrant up
 
 Used roles:
 
-- `[glusterfs_server](https://github.com/jtyr/ansible-glusterfs_server)`
-- `[glusterfs_client](https://github.com/jtyr/ansible-glusterfs_client)`
-- `[vagrant_ubuntu_init](https://github.com/jtyr/ansible-vagrant_ubuntu_init)`
-- `[lvm_extend](https://github.com/jtyr/ansible-lvm_extend)`
+- [`glusterfs_server`](https://github.com/jtyr/ansible-glusterfs_server)
+- [`glusterfs_client`](https://github.com/jtyr/ansible-glusterfs_client)
+- [`vagrant_ubuntu_init`](https://github.com/jtyr/ansible-vagrant_ubuntu_init)
+- [`lvm_extend`](https://github.com/jtyr/ansible-lvm_extend)
