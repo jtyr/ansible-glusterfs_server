@@ -43,6 +43,22 @@
   tags:
     - glusterfs_server_pkg
 
+- name: Install additional GlusterFS packages
+  package:
+    name: "{{ item }}"
+  with_items: "{{ glusterfs_server_pkg_add }}"
+  notify:
+    - Restart GlusterFS service
+  tags:
+    - glusterfs_server_pkg
+
+- name: Make sure the secure-access file {{ 'exists' if glusterfs_server_secure_access == true else 'does not exist' }}
+  file:
+    path: "{{ glusterfs_server_secure_access_file }}"
+    state: "{{ 'touch' if glusterfs_server_secure_access == true else 'absent' }}"
+  tags:
+    - glusterfs_server_ssl
+
 - name: Enable the GlusterFS service
   service:
     name: "{{ glusterfs_server_service }}"
@@ -59,7 +75,7 @@
     - glusterfs_server_service
 
 - include_tasks: volume.yaml
-  loop: "{{ glusterfs_server_volumes }}"
+  with_items: "{{ glusterfs_server_volumes }}"
   loop_control:
     loop_var: vol
   tags:

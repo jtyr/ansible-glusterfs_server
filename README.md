@@ -71,7 +71,7 @@ glusterfs_server_yumrepo_release: "{{
         ansible_distribution_major_version | int < 9
       )
     ) else
-  '4.0' }}"
+  '4.1' }}"
 
 # YUM repo URL
 glusterfs_server_yumrepo_url: https://buildlogs.centos.org/centos/{{ ansible_distribution_major_version }}/storage/$basearch/gluster-{{ glusterfs_server_yumrepo_release }}/
@@ -93,6 +93,15 @@ glusterfs_server_apt_url: "{{
 # Package to be installed (explicit version can be specified here)
 glusterfs_server_pkg: glusterfs-server
 
+# Additional Gluster packages (e.g. glusterfs-rdma)
+glusterfs_server_pkg_add: []
+
+# Location of the secure-access file
+glusterfs_server_secure_access_file: /var/lib/glusterd/secure-access
+
+# Whether to create the secure-access file or not
+glusterfs_server_secure_access: no
+
 # Service name
 glusterfs_server_service: "{{
   'glusterd'
@@ -103,7 +112,6 @@ glusterfs_server_service: "{{
       ) or
         ansible_distribution == 'Debian' and
         ansible_distribution_major_version | int >= 9
-      )
     ) else
   'glusterfs-server' }}"
 
