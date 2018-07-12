@@ -30,3 +30,5 @@
     stripes: "{{ vol.stripes | default(omit) }}"
     transport: "{{ vol.transport | default(omit) }}"
   run_once: "{{ vol.run_once | default(false) }}"
+  when: >
+    glusterfs_server_uuid == None

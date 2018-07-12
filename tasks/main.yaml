@@ -59,6 +59,25 @@
   tags:
     - glusterfs_server_ssl
 
+- name: Check if glusterd.info exists
+  stat:
+    path: "{{ glusterfs_server_glusterd_info }}"
+  register: glusterfs_server_glusterd_info_file
+  when: glusterfs_server_uuid != None
+  tags:
+    - glusterfs_server_uuid
+
+- name: Force specific UUID
+  copy:
+    dest: "{{ glusterfs_server_glusterd_info }}"
+    content: |
+      UUID={{ glusterfs_server_uuid }}
+  when: >
+    glusterfs_server_uuid != None and
+    not glusterfs_server_glusterd_info_file.stat.exists
+  tags:
+    - glusterfs_server_uuid
+
 - name: Enable the GlusterFS service
   service:
     name: "{{ glusterfs_server_service }}"

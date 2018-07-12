@@ -102,6 +102,12 @@ glusterfs_server_secure_access_file: /var/lib/glusterd/secure-access
 # Whether to create the secure-access file or not
 glusterfs_server_secure_access: no
 
+# Location of the glusterd.info file
+glusterfs_server_glusterd_info: /var/lib/glusterd/glusterd.info
+
+# Server UUID (recovery only)
+glusterfs_server_uuid: null
+
 # Service name
 glusterfs_server_service: "{{
   'glusterd'
