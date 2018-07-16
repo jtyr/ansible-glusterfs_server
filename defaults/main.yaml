@@ -54,9 +54,6 @@ glusterfs_server_glusterd_info: /var/lib/glusterd/glusterd.info
 # Server UUID (recovery only)
 glusterfs_server_uuid: null
 
-# Cluster ID (recovery only)
-glusterfs_server_clusterid: null
-
 # Service name
 glusterfs_server_service: "{{
   'glusterd'

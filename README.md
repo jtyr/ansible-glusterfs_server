@@ -39,11 +39,20 @@ Examples
     glusterfs_server_volumes:
       - name: test1
         bricks: /mnt/bricks/b1
-        replicas: 2
+        # Use odd number of replicas to prevent split-brain situation
+        replicas: 3
         cluster:
           - 192.168.169.10
           - 192.168.169.11
+          - 192.168.169.12
         run_once: yes
+        options:
+          # Allow connection from client running on the localhost only
+          auth.allow: localhost
+          # Reduce ping timeout to detect host is down
+          network.ping-timeout: "10"
+          # Disable NFS
+          nfs.disable: "on"
   roles:
     - lvm_extend
     - glusterfs_server
@@ -108,9 +117,6 @@ glusterfs_server_glusterd_info: /var/lib/glusterd/glusterd.info
 # Server UUID (recovery only)
 glusterfs_server_uuid: null
 
-# Cluster ID (recovery only)
-glusterfs_server_clusterid: null
-
 # Service name
 glusterfs_server_service: "{{
   'glusterd'
@@ -132,6 +138,64 @@ glusterfs_server_brick_mode: "0750"
 # Volumes (see README for examples)
 glusterfs_server_volumes: []
 ```
+
+
+GlusterFS procedures
+--------------------
+
+### Replacing a Host Machine with the same hostname
+
+If a GlusterFS host becomes unrecovable, it's necessary to rebuild it and
+make it to join the cluster. This can be done like described in the [GlusterFS
+documentation](https://access.redhat.com/documentation/en-us/red_hat_gluster_storage/3/html/administration_guide/sect-replacing_hosts#Replacing_a_Host_Machine_with_the_Same_Hostname)
+and this role can help with that a little bit. The procedure requires to gather
+two important information - the _server UUID_ of the failed server and the
+_volume ID(s)_ of the volume(s).
+
+First we build a new host with the same hostname and IP like the failed host.
+Then we find the UUID of the failed host by running `gluster pool list` on any
+healthy host of the cluster. Then we find the volume IDs of all volumes we need
+to recover o the new host by running `getfattr -d -m trusted.glusterfs.volume-id
+-ehex /mnt/bricks/b1` on any of the healthy hosts containing that volume. Then
+we use these information during the `glusterfs_server` role installation by
+adding these variables:
+
+```
+# This is the host UUID we got from the pool list
+glusterfs_server_uuid: <uuid>
+
+glusterfs_server_volumes:
+  - name: test1
+    ...
+    # This is the volume ID we got by running getfattr
+    volume_id: <volume_id>
+```
+
+Now we we run the `glusterfs_server` role on the new host which will install
+GlusterFS, set the UUID and the volume ID. After that we are ready to start the
+recovery process (all commands are run on the new host):
+
+```
+# Probe the healthy peers
+gluster peer probe 192.168.234.11
+gluster peer probe 192.168.234.12
+# Sync volumes from one of the healthy hosts
+gluster volume sync 192.168.234.11 all
+# Restart the service
+systemctl stop glusterd
+ps -ef | grep glus | grep -v grep && killall glusterfsd glusterfs glusterd
+systemctl start glusterd
+# Check if the brick runs (the brick should have a port assigned)
+gluster volume status
+# Start healing of the volume
+gluster volume heal <volume_name> full
+# Wait for the cluster to finish healing
+gluster volume heal <volume_name> info
+```
+
+Then remove or comment out the `glusterfs_server_uuid` variable and the
+`volume_id` option from the `glusterfs_server_volumes` variable. Then you can
+continue by running the `glusterfs_client` on the new host.
 
 
 Dependencies

@@ -10,22 +10,25 @@
   when: >
     'bricks' in vol
 
-- name: Sets the Cluster ID ({{ vol.name }})
+- name: Sets the Volume ID ({{ vol.name }})
   myxattr:
     path: "{{ vol.bricks }}"
     namespace: trusted
     key: glusterfs.volume-id
-    value: "{{ glusterfs_server_clusterid }}"
+    value: "{{ vol.volume_id }}"
   when: >
-    glusterfs_server_clusterid != None
+    'volume_id' in vol and
+    vol.volume_id != None
 
 - name: Create .glusterfs directory ({{ vol.name }})
   file:
     path: "{{ vol.bricks }}/.glusterfs"
     state: directory
   when: >
-    glusterfs_server_uuid != None or
-    glusterfs_server_clusterid != None
+    glusterfs_server_uuid != None or (
+      'volume_id' in vol and
+      vol.volume_id != None
+    )
 
 - name: Manage volume ({{ vol.name }})
   gluster_volume:
@@ -48,5 +51,7 @@
     transport: "{{ vol.transport | default(omit) }}"
   run_once: "{{ vol.run_once | default(false) }}"
   when: >
-    glusterfs_server_uuid == None and
-    glusterfs_server_clusterid == None
+    glusterfs_server_uuid == None and (
+      'volume_id' not in vol or
+      vol.volume_id == None
+    )
